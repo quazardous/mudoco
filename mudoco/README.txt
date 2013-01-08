@@ -105,7 +105,7 @@ The session feature is already a plugin (see includes/MuDoCo/Plugin/Session.php)
  
  ** Security **
  
- To make it simple :
+ Nonce - To make it simple :
  
  - the client site sitea.loc calls cb.php wich retrieve a nonce from mudoco server (in a server to server http request).
  - This nonce is put in a cookie in sitea.loc
@@ -115,5 +115,18 @@ The session feature is already a plugin (see includes/MuDoCo/Plugin/Session.php)
  In fact it's a bit more complex because we use a client nonce to get a hashed nonce => md5(cnonce+nonce)...
  
  
- author : berliozdavid@gmail.com
+ HTTPS
+ 
+ You should consider putting MuDoCo server in HTTPS !
+ 
+ 
+ ** Licence **
+  
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ 
+ ** author **
+ 
+ berliozdavid@gmail.com
+ 
  
