@@ -19,11 +19,17 @@ class MuDoCo_Client {
   protected function getHashedNonce() {
     if (empty($this->_hnonce)) {
       // client nonce is send to mudoco
-      $url = $this->serverBaseUrl() . '/restricted/n.php?';
-      $url .= http_build_query(array('a' => $this->getClientNonce()));
+      $url = $this->serverBaseUrl() . '/restricted/api.php?';
+      $url .= http_build_query(array(
+          's' => 'nonce',
+          'cn' => $this->getClientNonce(),
+          ));
       if ($res = $this->httpRequest($url)) {
-        // mudoco return md5(cnonce+nonce)
-        $this->_hnonce = trim($res);
+        $res = json_decode($res);
+        if ($res->code == 0) {
+          // mudoco return md5(cnonce+nonce)
+          $this->_hnonce = $res->data;
+        }
       }
     }
     return $this->_hnonce;

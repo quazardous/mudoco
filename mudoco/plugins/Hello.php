@@ -25,12 +25,13 @@ class MuDoCo_Plugin_Hello implements MuDoCo_Plugin_Interface {
   /**
    * The init function.
    *
+   * @param string $mode xss or api
    * @param boolean $safe the xss call had correct nonce
    *
    * @see MuDoCO_Server::init()
    * @see $mudoco_conf['MUDOCO_SERVER_INIT']
    */
-  public function init($safe) {
+  public function init($mode, $safe) {
     // nothing...
   }
   

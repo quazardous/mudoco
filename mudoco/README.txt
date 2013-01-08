@@ -20,9 +20,10 @@ There is no big dependencies.
 
 ** Howto testsite **
 
-Requirement for default config :
+Requirements for default config :
 
 - session
+- allow_url_fopen 1 (php.ini)
 - sqlite3 (to hold nonce database)
 
 Install :
@@ -51,6 +52,25 @@ Install :
  See testsite/index.php !
  
  
+ ** Config **
+ 
+ Client side :
+ - $mudoco_conf['MUDOCO_CLIENT_SALT']
+ - $mudoco_conf['MUDOCO_SERVER_BASE'] (mandatory) URL to MuDoCo server
+ - $mudoco_conf['MUDOCO_CLIENT_COOKIENAME'] default is 'MDCL'
+ 
+ Server side :
+ - $mudoco_conf['MUDOCO_STORAGE_SESSION_SALT']
+ - $mudoco_conf['MUDOCO_STORAGE_NONCE_SALT']
+ - $mudoco_conf['MUDOCO_PLUGIN_SESSION_STORAGE_CLASS'] default 'MuDoCo_Storage_Session_Default'
+ - $mudoco_conf['MUDOCO_STORAGE_SESSION_COOKIENAME'] default is 'MDCID'
+ - $mudoco_conf['MUDOCO_STORAGE_SESSION_LIFETIME'] default is 365*24*3600
+ - $mudoco_conf['MUDOCO_SERVER_NONCE_STORAGE_CLASS'] default 'MuDoCo_Storage_Nonce_Sqlite'
+ - $mudoco_conf['MUDOCO_STORAGE_NONCE_SQLITE_FILE'] (mandatory) path to rhe sqlite3 file (will be created)
+ - $mudoco_conf['MUDOCO_SERVER_PLUGINS_DIR'] path to external plugins
+ - $mudoco_conf['MUDOCO_SERVER_INIT'] list of plugins for init() function.
+ 
+ 
  ** Plugins **
  
 You can extend MuDoCo features using plugins.
@@ -72,6 +92,15 @@ The session feature is already a plugin (see includes/MuDoCo/Plugin/Session.php)
  
  You can push the query in the queue : _mdcq.push({query: 'hello', ... })
  You can trigger the query : MuDoCo.me().query('hello')
+ 
+ 
+ ** Interface / Customization **
+ You can provide your own class.
+ 
+ - MuDoCo_Plugin_Interface : see plugins
+ - MuDoCo_Storage_Nonce_Interface : provide your own nonce database
+ - MuDoCo_Storage_Session_Interface : provide your own session handler
+ - MuDoCo_Client::httpRequest() : modify the way http request are done
  
  
  ** Security **

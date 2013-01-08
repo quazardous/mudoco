@@ -16,7 +16,6 @@ require_once "MuDoCo/Plugin/Interface.php";
  *
  */
 class MuDoCo_Server {
-  protected $_defaultStorageNonceClass = 'MuDoCo_Storage_Nonce_Sqlite';
 
   /**
    * Generate and register a nonce with a given client nonce.
@@ -27,6 +26,44 @@ class MuDoCo_Server {
    */
   public function generateNonce($cnonce) {
     return $this->getNonceStorage()->register($cnonce);
+  }
+  
+  /**
+   * API system call
+   * 
+   * @param string $name
+   * @param array $param
+   * @param mixed $data
+   * 
+   * @return int code
+   */
+  public function apiSystem($name, $params, &$data) {
+    switch ($name) {
+      case 'nonce':
+        if (!$this->assertParam('cn', $params)) return 1;
+        $nonce = $this->generateNonce($params['cn']);
+        $data = md5($params['cn'] . $nonce);
+        return 0;
+    }
+    return -1;
+  }
+  
+  /**
+   * Asser that all params in $list are present in $params.
+   * 
+   * @param array|string $list
+   * @param array $params
+   * 
+   * @return boolean
+   */
+  protected function assertParam($list, $params) {
+    if (!is_array($list)) {
+      $list = array($list);
+    }
+    foreach ($list as $p) {
+      if (!isset($params[$p])) return false;
+    }
+    return true;
   }
   
   /**
@@ -85,7 +122,7 @@ class MuDoCo_Server {
   }
   
   /**
-   * Call the XSS Callback with the given data.
+   * Call the XSS JS Callback with the given data.
    * 
    * @param mixed $data
    * @param int $code 0 for success
@@ -106,7 +143,28 @@ class MuDoCo_Server {
   
     flush();
   }
+
+  /**
+   * Return Json for API.
+   *
+   * @param mixed $data
+   * @param int $code
+   */
+  public function api($data, $code) {
+    header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+    header('Content-Type: text/javascript');
   
+    $data = (object) array(
+        'data' => $data,
+        'code' => $code,
+    );
+  
+    echo json_encode($data);
+  
+    flush();
+  }  
+ 
   /**
    * Return the plugin class basename.
    * 
@@ -130,7 +188,7 @@ class MuDoCo_Server {
   }
   
   /**
-   * Execute the given query.
+   * Execute the given XSS query.
    * Try to find the appropriate plugin.
    * - loaded plugin class
    * - plugin dir
@@ -141,7 +199,7 @@ class MuDoCo_Server {
    * @param mixed $data result to send back to AJAX callback
    * @return int return code
    */
-  public function query($q, $params, &$data) {
+  public function pluginQuery($q, $params, &$data) {
     $plugin = $this->getPlugin($q);
     if (is_object($plugin) && method_exists($plugin, 'query')) {
       return $plugin->query($params, $data);
@@ -183,15 +241,16 @@ class MuDoCo_Server {
   /**
    * Trigger plugins init stuff.
    * 
+   * @param string $mode api or xss
    * @param boolean $safe
    * @see $mudoco_conf['MUDOCO_SERVER_INIT']
    */
-  public function init($safe = false) {
+  public function init($mode, $safe = false) {
     global $mudoco_conf;
     if (isset($mudoco_conf['MUDOCO_SERVER_INIT']) && is_array($mudoco_conf['MUDOCO_SERVER_INIT'])) {
       foreach ($mudoco_conf['MUDOCO_SERVER_INIT'] as $tag) {
         if ($plugin = $this->getPlugin($tag)) {
-          $plugin->init($safe);
+          $plugin->init($mode, $safe);
         }
       }
     }
@@ -204,4 +263,5 @@ class MuDoCo_Server {
     }
     return 'MuDoCo_Storage_Nonce_Sqlite';
   }
+  
 }

@@ -6,6 +6,8 @@
  *
  * @param a cnonce|hnonce
  * @param q query plugin
+ * @param r random
+ * @param i xss context
  * 
  * hnonce = md5(cnonce nonce)
  *
@@ -25,17 +27,17 @@ if (isset($_GET['a'])) {
   list($cnonce, $hnonce) = explode ('|', $_GET['a']);
   if($server->checkNonce($cnonce, $hnonce)) {
     $code = 0;
-    $server->init(true); $init = true;
+    $server->init('xss', true); $init = true;
     if (isset($_GET['q'])) {
       $q = $_GET['q'];
       $params = array_diff_key($_GET, array('a'=>'', 'i'=>'', 'r'=>'', 'q'=>''));
-      $code = $server->query($q, $params, $data);
+      $code = $server->pluginQuery($q, $params, $data);
     }
   }
 }
 
 if (!$init) {
-  $server->init();
+  $server->init('xss');
 }
 
 $server->xss($data, $code, isset($_GET['i']) ? $_GET['i'] : null);

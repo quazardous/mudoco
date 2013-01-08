@@ -2,7 +2,7 @@
 
 $mudoco_conf['MUDOCO_STORAGE_SESSION_SALT'] = 'my-salt-123';
 $mudoco_conf['MUDOCO_STORAGE_NONCE_SALT'] = 'my-salt-123';
-//$mudoco_conf['MUDOCO_PLUGIN_SESSION_SESSION_STORAGE_CLASS'] = 'MuDoCo_Storage_Session_Default';
+//$mudoco_conf['MUDOCO_PLUGIN_SESSION_STORAGE_CLASS'] = 'MuDoCo_Storage_Session_Default';
 //$mudoco_conf['MUDOCO_STORAGE_SESSION_COOKIENAME'] = 'MDCID';
 //$mudoco_conf['MUDOCO_STORAGE_SESSION_LIFETIME'] = 365*24*3600;
 //$mudoco_conf['MUDOCO_SERVER_NONCE_STORAGE_CLASS'] = 'MuDoCo_Storage_Nonce_Sqlite';

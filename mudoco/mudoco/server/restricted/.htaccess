@@ -1,4 +1,4 @@
 deny from all
 allow from localhost
-# n.php is accessed by known servers only
+# api.php is accessed by known servers only
 # this should be IP protected

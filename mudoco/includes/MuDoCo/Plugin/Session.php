@@ -33,13 +33,16 @@ class MuDoCo_Plugin_Session implements MuDoCo_Plugin_Interface {
   /**
    * The init function.
    *
+   * @param string $mode xss or api
    * @param boolean $safe the xss call had correct nonce
    *
    * @see MuDoCO_Server::init()
    * @see $mudoco_conf['MUDOCO_SERVER_INIT']
    */
-  public function init($safe) {
-    $this->getSessionStorage()->cookie();
+  public function init($mode, $safe) {
+    if ($mode == 'xss') {
+      $this->getSessionStorage()->cookie();
+    }
   }
   
   /**
@@ -97,8 +100,8 @@ class MuDoCo_Plugin_Session implements MuDoCo_Plugin_Interface {
   
   protected function getSessionStorageClass() {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_PLUGIN_SESSION_SESSION_STORAGE_CLASS'])) {
-      return $mudoco_conf['MUDOCO_PLUGIN_SESSION_SESSION_STORAGE_CLASS'];
+    if (isset($mudoco_conf['MUDOCO_PLUGIN_SESSION_STORAGE_CLASS'])) {
+      return $mudoco_conf['MUDOCO_PLUGIN_SESSION_STORAGE_CLASS'];
     }
     return 'MuDoCo_Storage_Session_Default';
   }
