@@ -35,7 +35,7 @@ MuDoCo.prototype.callbacks.default = function(mode, vars, success, error)
 	}
 };
 
-MuDoCo.prototype.callbacks.cookie = function(mode, params, success, error)
+MuDoCo.prototype.callbacks.session = function(mode, params, success, error)
 {
 	this.callbacks.default.call(this, mode, params, success, error);
 	if (mode == 'success') {

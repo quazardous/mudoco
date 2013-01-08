@@ -30,7 +30,7 @@ _mdcq.push({
 		}
 	},});
 	
-_mdcq.push({query: 'cookie', vars: {k: 'foo'} });
+_mdcq.push({query: 'session', vars: {k: 'foo'} });
 
 // add a JS callback to the queue
 _mdcq.push(function() { document.testcookie.foo.value=this.data.foo; });

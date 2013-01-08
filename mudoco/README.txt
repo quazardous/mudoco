@@ -54,7 +54,7 @@ Install :
  ** Plugins **
  
 You can extend MuDoCo features using plugins.
-The cookie feature is already a plugin (see includes/MuDoCo/Plugin/Cookie.php).
+The session feature is already a plugin (see includes/MuDoCo/Plugin/Session.php).
 
  A plugin has 2 sides :
 

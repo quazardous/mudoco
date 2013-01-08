@@ -9,7 +9,7 @@ $mudoco_conf['MUDOCO_SERVER_PLUGINS_DIR'] = '/home/berlioz/www/mudoco/plugins';
 
 // list of plugins to init at each xss call
 $mudoco_conf['MUDOCO_SERVER_INIT'] = array(
-    'cookie', // handle session cookie
+    'session', // handle session
     );
 
 $paths = explode(PATH_SEPARATOR, get_include_path());
