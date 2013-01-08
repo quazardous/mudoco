@@ -30,7 +30,7 @@ _mdcq.push({
 		}
 	},});
 	
-_mdcq.push({query: 'session', vars: {k: 'foo'} });
+_mdcq.push({query: 'session', vars: {k: 'foo'}});
 
 // add a JS callback to the queue
 _mdcq.push(function() { document.testcookie.foo.value=this.data.foo; });
@@ -53,7 +53,7 @@ Test some custom plugin.
 <p>
 Set some multi domain cookie.
 </p>
-<form name="testcookie" onsubmit="javascript:MuDoCo.me().query('cookie', {k: 'foo', v:this.foo.value}); return false;">
+<form name="testcookie" onsubmit="javascript:MuDoCo.me().query('session', {k: 'foo', v:this.foo.value}); return false;">
 <strong>foo</strong> = <input type="text" name="foo" />
 <input type="submit" value="Cookie test" />
 </form>

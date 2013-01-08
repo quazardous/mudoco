@@ -170,7 +170,7 @@ class MuDoCo_Server {
           include_once $file;
         }
         else {
-          include_once strtr($class, '_', '/') . ".php";
+          @include_once strtr($class, '_', '/') . ".php";
         }
       }
       if (class_exists($class)) {

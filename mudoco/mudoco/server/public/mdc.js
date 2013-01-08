@@ -1,12 +1,13 @@
 /**
  * MuDoCo - A Multi Domain Cookie
+ *
+ * berliozdavid@gmail.com
  */
 
 // the main mudoco queue
 var _mdcq = _mdcq || [];
 
-MuDoCo = function()
-{
+MuDoCo = function() {
 	this.options = {localCookieName: 'MDCL'};
 	// used for handling simultaneous xss calls contexts
 	this.xssPending = [];
@@ -24,8 +25,7 @@ MuDoCo.me = function() {
 
 MuDoCo.prototype.callbacks = {};
 
-MuDoCo.prototype.callbacks.default = function(mode, vars, success, error)
-{
+MuDoCo.prototype.callbacks.default = function(mode, vars, success, error) {
 	if (mode == 'run') {
 		this.mdcXssAjax({
 			vars: vars,
@@ -35,8 +35,7 @@ MuDoCo.prototype.callbacks.default = function(mode, vars, success, error)
 	}
 };
 
-MuDoCo.prototype.callbacks.session = function(mode, params, success, error)
-{
+MuDoCo.prototype.callbacks.session = function(mode, params, success, error) {
 	this.callbacks.default.call(this, mode, params, success, error);
 	if (mode == 'success') {
 		for(var i in params.data) {
@@ -49,8 +48,7 @@ MuDoCo.prototype.getMNonce = function() {
 	return this.getCookie(this.options['localCookieName']);
 };
 
-MuDoCo.prototype.getCookie = function(key)
-{
+MuDoCo.prototype.getCookie = function(key) {
     var result;
     return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? (result[1]) : null;
 };
@@ -82,8 +80,7 @@ MuDoCo.prototype.run = function(cb, params, success, error) {
 	}
 };
 
-MuDoCo.prototype.processQ = function()
-{
+MuDoCo.prototype.processQ = function() {
 	var self = this;
 	if(_mdcq.length) {
 		var item = _mdcq.shift();
@@ -119,7 +116,7 @@ MuDoCo.prototype.query = function(q, vars, success, error) {
 	this.run(this.callbacks[q], vars, success, error);
 }
 
-MuDoCo.prototype.beacon = function(opts){
+MuDoCo.prototype.beacon = function(opts) {
     // Make sure we have a base object for opts
     opts = opts || {};
     // Setup defaults for options
@@ -152,14 +149,14 @@ MuDoCo.prototype.beacon = function(opts){
     }
 };
 
-MuDoCo.prototype.localBeacon = function(opts){
+MuDoCo.prototype.localBeacon = function(opts) {
     opts = opts || {};
     opts.url = opts.url || this.options['localBeacon'];
     this.beacon(opts);
 };
 
 
-MuDoCo.prototype.xssAjax = function(opts){
+MuDoCo.prototype.xssAjax = function(opts) {
     // Make sure we have a base object for opts
     opts = opts || {};
     // Setup defaults for options
@@ -214,7 +211,7 @@ MuDoCo.prototype.xssAjax = function(opts){
     }
 };
 
-MuDoCo.prototype.mdcXssAjax = function(opts){
+MuDoCo.prototype.mdcXssAjax = function(opts) {
 	opts = opts || {};
 	opts.vars = opts.vars || {};
 	opts.vars['a'] = this.getMNonce();
