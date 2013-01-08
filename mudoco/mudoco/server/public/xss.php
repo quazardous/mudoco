@@ -29,9 +29,10 @@ if (isset($_GET['a'])) {
     $code = 0;
     $server->init('xss', true); $init = true;
     if (isset($_GET['q'])) {
-      $q = $_GET['q'];
       $params = array_diff_key($_GET, array('a'=>'', 'i'=>'', 'r'=>'', 'q'=>''));
-      $code = $server->pluginQuery($q, $params, $data);
+      $plugin = $server->getPlugin($_GET['q']);
+      $plugin->init('xss', true);
+      $code = $plugin->query(array_diff_key($_GET, array('q'=>'')), $data);
     }
   }
 }

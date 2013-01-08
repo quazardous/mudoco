@@ -42,7 +42,9 @@ if (isset($_GET['s'])) {
 }
 elseif (isset($_GET['q'])) {
   // plugin call
-  $code = $server->pluginQuery($_GET['q'], array_diff_key($_GET, array('q'=>'')), $data);
+  $plugin = $server->getPlugin($_GET['q']);
+  $plugin->init('api');
+  $code = $plugin->query(array_diff_key($_GET, array('q'=>'')), $data);
 }
 
 $server->api($data, $code);

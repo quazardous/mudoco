@@ -186,27 +186,7 @@ class MuDoCo_Server {
     });
     return implode('_', $words);
   }
-  
-  /**
-   * Execute the given XSS query.
-   * Try to find the appropriate plugin.
-   * - loaded plugin class
-   * - plugin dir
-   * - default plugin class (or in include path)
-   * 
-   * @param string $q the query tag
-   * @param array $params
-   * @param mixed $data result to send back to AJAX callback
-   * @return int return code
-   */
-  public function pluginQuery($q, $params, &$data) {
-    $plugin = $this->getPlugin($q);
-    if (is_object($plugin) && method_exists($plugin, 'query')) {
-      return $plugin->query($params, $data);
-    }
-    return 99;
-  }
-  
+   
   protected $_plugins = array();
   
   /**
@@ -216,7 +196,7 @@ class MuDoCo_Server {
    * 
    * @return MuDoCo_Plugin_Interface
    */
-  protected function getPlugin($tag) {
+  public function getPlugin($tag) {
     global $mudoco_conf;
     if (empty($this->_plugin[$tag])) {
       $basename = $this->getPluginBasename($tag);
