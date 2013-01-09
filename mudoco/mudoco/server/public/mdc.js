@@ -25,18 +25,18 @@ MuDoCo.me = function() {
 
 MuDoCo.prototype.callbacks = {};
 
-MuDoCo.prototype.callbacks.default = function(mode, vars, success, error) {
+MuDoCo.prototype.callbacks.fallback = function(mode, vars, success, error) {
 	if (mode == 'run') {
 		this.mdcXssAjax({
 			vars: vars,
 			success: success,
-			error: error,
+			error: error
 		});
 	}
 };
 
 MuDoCo.prototype.callbacks.session = function(mode, params, success, error) {
-	this.callbacks.default.call(this, mode, params, success, error);
+	this.callbacks.fallback.call(this, mode, params, success, error);
 	if (mode == 'success') {
 		for(var i in params.data) {
 			this.data[i] = params.data[i];
@@ -68,14 +68,14 @@ MuDoCo.prototype.run = function(cb, params, success, error) {
 		cb.call(this, 'run', params, success, function() {
 			// retry
 			self.localBeacon({
-				success: function() { cb.call(self, 'run', params, success, error); },
+				success: function() { cb.call(self, 'run', params, success, error); }
 			});
 		});
 	}
 	else {
 		// get a new nonce
 		this.localBeacon({
-			success: function() { cb.call(self, 'run', params, success, error); },
+			success: function() { cb.call(self, 'run', params, success, error); }
 		});
 	}
 };
@@ -184,7 +184,7 @@ MuDoCo.prototype.xssAjax = function(opts) {
 	this.xssPending[i] = {
 		success: opts.success, 
 		error: opts.error, 
-		vars: opts.vars,
+		vars: opts.vars
 	};
 
 	// retry if xss query fails on network error...
@@ -230,7 +230,7 @@ MuDoCo.prototype.xssAjaxCallback = function(res) {
 			this.callbacks[q].call(this, mode, res);
 		}
 		else if (q) {
-			this.callbacks.default.call(this, mode, res);
+			this.callbacks.fallback.call(this, mode, res);
 		}
 		if (res.code >= 0) {
 			pending.success(res);

@@ -11,23 +11,22 @@ var _mdcq = _mdcq || [];
 // init MuDoCo with MuDoCo server base URL and local beacon URL
 _mdcq.push({
 	init: 'serverBase',
-	value: '<?php print $serverBase; ?>',});
+	value: '<?php print $serverBase; ?>'});
 
 _mdcq.push({
 	init: 'localBeacon',
-	value: '<?php print $localBeacon; ?>',});
+	value: '<?php print $localBeacon; ?>'});
 
 // add the JS part of the hello plugin
 // see this.callbacks['default'] in mudoco/server/public/mdc.js
 _mdcq.push({
 	plugin: 'hello',
-	value: function(mode, params, success, error)
-	{
-		this.callbacks.default.call(this, mode, params, success, error);
+	value: function(mode, params, success, error)	{
+		this.callbacks.fallback.call(this, mode, params, success, error);
 		if (mode == 'success') {
 			  alert(params.data.hello);	  
 		}
-	},});
+	}});
 	
 _mdcq.push({query: 'session', vars: {k: 'foo'}});
 
