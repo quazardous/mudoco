@@ -111,10 +111,10 @@ MuDoCo.prototype.query = function(q, vars, success, error) {
 	var vars = vars || {};
 	vars.q = q;	
 	if (this.callbacks[q] == undefined) {
-		q = 'default';
+		q = 'fallback';
 	}	
 	this.run(this.callbacks[q], vars, success, error);
-}
+};
 
 MuDoCo.prototype.beacon = function(opts) {
     // Make sure we have a base object for opts
@@ -249,7 +249,7 @@ MuDoCo.prototype.nextPendingIndex = function() {
 		if (!this.xssPending[i]) return parseInt(i);
 	}
 	return parseInt(max) + 1;
-}
+};
 
 // process the queue !
 MuDoCo.me().processQ();

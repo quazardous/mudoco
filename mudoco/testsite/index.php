@@ -18,7 +18,7 @@ _mdcq.push({
 	value: '<?php print $localBeacon; ?>'});
 
 // add the JS part of the hello plugin
-// see this.callbacks['default'] in mudoco/server/public/mdc.js
+// see this.callbacks.fallback in mudoco/server/public/mdc.js
 _mdcq.push({
 	plugin: 'hello',
 	value: function(mode, params, success, error)	{
