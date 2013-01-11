@@ -1,4 +1,5 @@
 <?php include_once 'etc/config.php'; ?>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -36,7 +37,7 @@ _mdcq.push(function() { document.testcookie.foo.value=this.data.foo; });
 // asynch call static MuDoCo JS script
 (function() {
   var mdc = document.createElement('script'); mdc.type = 'text/javascript'; mdc.async = true;
-  mdc.src = '<?php print $serverBase; ?>/public/mdc.js';
+  mdc.src = '<?php print $serverBase; ?>/public/mdc.min.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mdc, s);
 })();
   
