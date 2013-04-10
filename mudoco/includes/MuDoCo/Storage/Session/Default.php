@@ -15,6 +15,15 @@ require_once 'MuDoCo/Storage/Session/Interface.php';
  * 
  */
 class MuDoCo_Storage_Session_Default implements MuDoCo_Storage_Session_Interface {
+
+  public function __construct() {
+    global $mudoco_conf;
+    $mudoco_conf += array(
+      'MUDOCO_STORAGE_SESSION_SALT' => time(),   
+      'MUDOCO_STORAGE_SESSION_COOKIENAME' => 'MDCID',
+      'MUDOCO_STORAGE_SESSION_LIFETIME' => 365*24*3600, // 1 year lifetime
+    );
+  }
   
   protected function start() {
     $mdcid = $this->id();
@@ -60,28 +69,17 @@ class MuDoCo_Storage_Session_Default implements MuDoCo_Storage_Session_Interface
   }
   
   protected function lifetime() {
-    global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_STORAGE_SESSION_LIFETIME'])) {
-      return $mudoco_conf['MUDOCO_STORAGE_SESSION_LIFETIME'];
-    }    
-    return 365*24*3600; // 1 year lifetime
+    global $mudoco_conf;  
+    return $mudoco_conf['MUDOCO_STORAGE_SESSION_LIFETIME'];
   }
   
   protected function cookieName() {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_STORAGE_SESSION_COOKIENAME'])) {
-      return $mudoco_conf['MUDOCO_STORAGE_SESSION_COOKIENAME'];
-    }
-    return 'MDCID';
+    return $mudoco_conf['MUDOCO_STORAGE_SESSION_COOKIENAME'];
   }
   
   protected function salt() {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_STORAGE_SESSION_SALT'])) {
-      return $mudoco_conf['MUDOCO_STORAGE_SESSION_SALT'];
-    }    
-    static $salt;
-    if (empty($salt)) $salt = time();
-    return $salt;
+    return $mudoco_conf['MUDOCO_STORAGE_SESSION_SALT'];
   }
 }

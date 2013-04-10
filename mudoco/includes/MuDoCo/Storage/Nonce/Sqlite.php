@@ -4,6 +4,15 @@ require_once "MuDoCo/Storage/Nonce/Interface.php";
 
 class MuDoCo_Storage_Nonce_Sqlite implements MuDoCo_Storage_Nonce_Interface {
   
+  public function __construct() {
+    global $mudoco_conf;
+    $mudoco_conf += array (
+      'MUDOCO_STORAGE_NONCE_SALT' => time(),
+      'MUDOCO_STORAGE_NONCE_SQLITE_FILE' => null,
+      'MUDOCO_STORAGE_NONCE_LIFETIME' => 600,
+    );
+  }
+  
   /**
    * @var SQLite3
    */
@@ -18,7 +27,7 @@ class MuDoCo_Storage_Nonce_Sqlite implements MuDoCo_Storage_Nonce_Interface {
       $this->_db = new SQLite3($mudoco_conf['MUDOCO_STORAGE_NONCE_SQLITE_FILE']);
       if ($this->_db) {
         if ($this->_db->busyTimeout(2000)) {
-          $this->_db->exec('CREATE TABLE IF NOT EXISTS nonce (cnonce VARCHAR(32) PRIMARY KEY, nonce VARCHAR(32), expire INTEGER);');
+          $this->_db->exec('CREATE TABLE IF NOT EXISTS nonce (cnonce VARCHAR(32) PRIMARY KEY, nonce VARCHAR(32), expire INTEGER, fingerprint VARCHAR(32));');
           $this->_db->exec('CREATE INDEX IF NOT EXISTS idx_expire ON nonce(expire);');
           $this->_db->exec('CREATE INDEX IF NOT EXISTS idx_nonce ON nonce(nonce);');
         }
@@ -28,7 +37,7 @@ class MuDoCo_Storage_Nonce_Sqlite implements MuDoCo_Storage_Nonce_Interface {
     return $this->_db;
   }
   
-  public function register($cnonce) {
+  public function register($cnonce, $fingerprint = null) {
     $nonce = md5($this->salt() . time() . rand() . uniqid());
     if ($this->db()->busyTimeout(2000)) {
       $nonce = $this->db()->escapeString($nonce);
@@ -41,18 +50,21 @@ class MuDoCo_Storage_Nonce_Sqlite implements MuDoCo_Storage_Nonce_Interface {
         $this->db()->exec("DELETE FROM nonce WHERE expire < $now;");
   
       }
-      $this->db()->exec("INSERT OR REPLACE INTO nonce (cnonce, nonce, expire) VALUES ('$cnonce', '$nonce', $expire);");
+      $this->db()->exec("INSERT OR REPLACE INTO nonce (cnonce, nonce, expire, fingerprint) VALUES ('$cnonce', '$nonce', $expire, '$fingerprint');");
     }
     $this->db()->busyTimeout(0);
     return $nonce;
   }
 
-  public function get($cnonce) {
+  public function get($cnonce, $fingerprint = null) {
     $nonce = false;
     if ($this->db()->busyTimeout(2000)) {
       $cnonce = $this->db()->escapeString($cnonce);
       $now = time();
-      $nonce = $this->db()->querySingle("SELECT nonce FROM nonce WHERE cnonce = '$cnonce' AND expire >= $now;");
+      if ($fingerprint)
+        $nonce = $this->db()->querySingle("SELECT nonce FROM nonce WHERE cnonce = '$cnonce' AND fingerprint = '$fingerprint' AND expire >= $now;");
+      else
+        $nonce = $this->db()->querySingle("SELECT nonce FROM nonce WHERE cnonce = '$cnonce' AND expire >= $now;");
     }
     $this->db()->busyTimeout(0);
     return $nonce;
@@ -60,19 +72,11 @@ class MuDoCo_Storage_Nonce_Sqlite implements MuDoCo_Storage_Nonce_Interface {
 
   protected function lifetime() {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_STORAGE_NONCE_LIFETIME'])) {
-      return $mudoco_conf['MUDOCO_STORAGE_NONCE_LIFETIME'];
-    }
-    return 600; // 10 minutes lifetime
+    return $mudoco_conf['MUDOCO_STORAGE_NONCE_LIFETIME'];
   }
   
   protected function salt() {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_STORAGE_NONCE_SALT'])) {
-      return $mudoco_conf['MUDOCO_STORAGE_NONCE_SALT'];
-    }
-    static $salt;
-    if (empty($salt)) $salt = time();
-    return $salt;
+    return $mudoco_conf['MUDOCO_STORAGE_NONCE_SALT'];
   }
 }

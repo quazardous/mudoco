@@ -17,6 +17,16 @@ require_once "MuDoCo/Plugin/Interface.php";
  */
 class MuDoCo_Server {
 
+  public function __construct() {
+    global $mudoco_conf;
+    $mudoco_conf += array(
+      'MUDOCO_SERVER_NONCE_STORAGE_CLASS' => 'MuDoCo_Storage_Nonce_Sqlite',
+      'MUDOCO_SERVER_CHECK_FINGERPRINT' => true,   
+      'MUDOCO_SERVER_INIT' => array(),
+      'MUDOCO_SERVER_PLUGINS_DIR' => null,
+    );
+  }
+  
   /**
    * Generate and register a nonce with a given client nonce.
    * 
@@ -24,8 +34,8 @@ class MuDoCo_Server {
    * 
    * @return string nonce
    */
-  public function generateNonce($cnonce) {
-    return $this->getNonceStorage()->register($cnonce);
+  public function generateNonce($cnonce, $fingerprint = null) {
+    return $this->getNonceStorage()->register($cnonce, $fingerprint);
   }
   
   /**
@@ -40,12 +50,24 @@ class MuDoCo_Server {
   public function apiSystem($name, $params, &$data) {
     switch ($name) {
       case 'nonce':
-        if (!$this->assertParam('cn', $params)) return 1;
-        $nonce = $this->generateNonce($params['cn']);
-        $data = md5($params['cn'] . $nonce);
-        return 0;
+        return $this->apiSystemNonce($params, $data);
     }
     return -1;
+  }
+  
+  /**
+   * API system call nonce
+   * 
+   * @param array $params
+   * @param array $data
+   * @return int code
+   */
+  protected function apiSystemNonce($params, &$data) {
+    global $mudoco_conf;
+    if (!$this->assertParam('cn', $params)) return 1;
+    $nonce = $this->generateNonce($params['cn'], isset($params['fp'])?$params['fp']:null);
+    $data = md5($params['cn'] . $nonce);
+    return 0;
   }
   
   /**
@@ -101,7 +123,8 @@ class MuDoCo_Server {
    * @return boolean
    */
   public function checkNonce($cnonce, $hnonce) {
-    if($nonce = $this->getNonceStorage()->get($cnonce)) {
+    global $mudoco_conf;
+    if($nonce = $this->getNonceStorage()->get($cnonce, $mudoco_conf['MUDOCO_SERVER_CHECK_FINGERPRINT'] ? MuDoCo_Client::get_finger_print() : null)) {
       return md5($cnonce . $nonce) == $hnonce;
     }
     return false;
@@ -227,21 +250,16 @@ class MuDoCo_Server {
    */
   public function init($mode, $safe = false) {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_SERVER_INIT']) && is_array($mudoco_conf['MUDOCO_SERVER_INIT'])) {
-      foreach ($mudoco_conf['MUDOCO_SERVER_INIT'] as $tag) {
-        if ($plugin = $this->getPlugin($tag)) {
-          $plugin->init($mode, $safe);
-        }
+    foreach ($mudoco_conf['MUDOCO_SERVER_INIT'] as $tag) {
+      if ($plugin = $this->getPlugin($tag)) {
+        $plugin->init($mode, $safe);
       }
     }
   }
   
   protected function getSessionStorageClass() {
     global $mudoco_conf;
-    if (isset($mudoco_conf['MUDOCO_SERVER_NONCE_STORAGE_CLASS'])) {
-      return $mudoco_conf['MUDOCO_SERVER_NONCE_STORAGE_CLASS'];
-    }
-    return 'MuDoCo_Storage_Nonce_Sqlite';
+    return $mudoco_conf['MUDOCO_SERVER_NONCE_STORAGE_CLASS'];
   }
   
 }

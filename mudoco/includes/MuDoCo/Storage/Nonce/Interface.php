@@ -13,20 +13,22 @@ interface MuDoCo_Storage_Nonce_Interface {
    * A client nonce should be a unique key.
    *
    * @param string $cnonce client nonce
+   * @param string $fingerprint browser fingerprint
    * 
    * @return string server nonce
    */
-  public function register($cnonce);
+  public function register($cnonce, $fingerprint = null);
 
   /**
    * Check if cnonce if registered and return the corresponding nonce.
    * The function should return false if the cnonce is not registered or if it is too old.
    *
    * @param string $nonce
+   * @param string $fingerprint browser fingerprint
    *
    * @return string|false
    */
-  public function get($cnonce);
+  public function get($cnonce, $fingerprint = null);
 
   /**
    * Delete the nonce

@@ -125,6 +125,10 @@ The session feature is already a plugin (see includes/MuDoCo/Plugin/Session.php)
  http://www.apache.org/licenses/LICENSE-2.0
  
  
+ ** Thanks **
+ http://www.wolf-software.com/downloads/php-classes/security-classes/web-fingerprint-class/
+ 
+ 
  ** author **
  
  berliozdavid@gmail.com
