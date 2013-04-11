@@ -42,7 +42,7 @@ class MuDoCo_Storage_Session_Default implements MuDoCo_Storage_Session_Interface
   
   public function read() {
     $this->start();
-    $data = $_SESSION['data'];
+    $data = isset($_SESSION['data'])?$_SESSION['data']:null;
     $this->stop();
     return $data;
   }

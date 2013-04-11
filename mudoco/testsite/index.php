@@ -7,20 +7,20 @@
 <script type="text/javascript">
 
 // MuDoCo Queue
-var _mdcq = _mdcq || [];
+var q = [];
 
 // init MuDoCo with MuDoCo server base URL and local beacon URL
-_mdcq.push({
+q.push({
 	init: 'serverBase',
 	value: '<?php print $serverBase; ?>'});
 
-_mdcq.push({
+q.push({
 	init: 'localBeacon',
 	value: '<?php print $localBeacon; ?>'});
 
 // add the JS part of the hello plugin
 // see this.callbacks.fallback in mudoco/server/public/mdc.js
-_mdcq.push({
+q.push({
 	plugin: 'hello',
 	value: function(mode, params, success, error)	{
 		this.callbacks.fallback.call(this, mode, params, success, error);
@@ -29,16 +29,17 @@ _mdcq.push({
 		}
 	}});
 	
-_mdcq.push({query: 'session', vars: {k: 'foo'}});
+q.push({query: 'session', vars: {k: 'foo'}});
 
 // add a JS callback to the queue
-_mdcq.push(function() { document.testcookie.foo.value=this.data.foo; });
-	
+q.push(function() { document.testcookie.foo.value=this.data.foo; });
+
+var _mdc;
 // asynch call static MuDoCo JS script
 (function() {
-  var mdc = document.createElement('script'); mdc.type = 'text/javascript'; mdc.async = true;
-  mdc.src = '<?php print $serverBase; ?>/public/mdc.min.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mdc, s);
+  var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.onload = function() { _mdc = new MuDoCo(q); _mdc.processQ(); };
+  e.src = '<?php print $serverBase; ?>/public/mdc.min.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
 })();
   
 </script>
@@ -47,12 +48,12 @@ _mdcq.push(function() { document.testcookie.foo.value=this.data.foo; });
 <h1><?php echo $_SERVER['HTTP_HOST']; ?></h1>
 <p>
 Test some custom plugin.
-<a href="javascript:MuDoCo.me().query('hello');">hello</a>
+<a href="javascript:_mdc.query('hello');">hello</a>
 </p>
 <p>
 Set some multi domain cookie.
 </p>
-<form name="testcookie" onsubmit="javascript:MuDoCo.me().query('session', {k: 'foo', v:this.foo.value}); return false;">
+<form name="testcookie" onsubmit="javascript:_mdc.query('session', {k: 'foo', v:this.foo.value}); return false;">
 <strong>foo</strong> = <input type="text" name="foo" />
 <input type="submit" value="Cookie test" />
 </form>

@@ -17,7 +17,10 @@ require_once "MuDoCo/Plugin/Interface.php";
  */
 class MuDoCo_Server {
 
-  public function __construct() {
+  protected $_name;
+  
+  public function __construct($name = null) {
+    $this->_name = $name;
     global $mudoco_conf;
     $mudoco_conf += array(
       'MUDOCO_SERVER_NONCE_STORAGE_CLASS' => 'MuDoCo_Storage_Nonce_Sqlite',
@@ -163,7 +166,7 @@ class MuDoCo_Server {
         'i' => $i,
         );
     
-    echo "MuDoCo.me().xssAjaxCallback(".json_encode($data).");";
+    echo $this->_name.".xssAjaxCallback(".json_encode($data).");";
   
     flush();
   }

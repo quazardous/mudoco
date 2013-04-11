@@ -90,8 +90,8 @@ The session feature is already a plugin (see includes/MuDoCo/Plugin/Session.php)
     - success : JS callback, takes 1 param (the data returned by the PHP plugin)
     - error JS callback
  
- You can push the query in the queue : _mdcq.push({query: 'hello', ... })
- You can trigger the query : MuDoCo.me().query('hello')
+ You can push the query in the queue : q.push({query: 'hello', ... })
+ You can trigger the query : _mdc.query('hello')
  
  
  ** Interface / Customization **

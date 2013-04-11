@@ -6,7 +6,7 @@
  * 
  * 
  * System call
- * param s : system call name
+ * param _s : system call name
  * 
  *  - nonce : Generate a nonce and register it with the given client nonce.
  *   - param cn : client nonce
@@ -36,15 +36,15 @@ $server->init('api');
 
 $code = -1; // >=0 for success or custom codes
 $data = null;
-if (isset($_GET['s'])) {
+if (isset($_GET['_s'])) {
   // system call
-  $code = $server->apiSystem($_GET['s'], array_diff_key($_GET, array('s'=>'')), $data);
+  $code = $server->apiSystem($_GET['_s'], array_diff_key($_GET, array('_s'=>'')), $data);
 }
-elseif (isset($_GET['q'])) {
+elseif (isset($_GET['_q'])) {
   // plugin call
-  $plugin = $server->getPlugin($_GET['q']);
+  $plugin = $server->getPlugin($_GET['_q']);
   $plugin->init('api');
-  $code = $plugin->query(array_diff_key($_GET, array('q'=>'')), $data);
+  $code = $plugin->query(array_diff_key($_GET, array('_q'=>'')), $data);
 }
 
 $server->api($data, $code);

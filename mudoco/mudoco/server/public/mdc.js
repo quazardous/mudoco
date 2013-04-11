@@ -4,23 +4,13 @@
  * berliozdavid@gmail.com
  */
 
-// the main mudoco queue
-var _mdcq = _mdcq || [];
-
-MuDoCo = function() {
+MuDoCo = function(q) {
+	this.name = null;
+	this.q = q;
 	this.options = {localCookieName: 'MDCL'};
 	// used for handling simultaneous xss calls contexts
 	this.xssPending = [];
 	this.data = {};
-};
-
-MuDoCo.singleton = null;
-
-MuDoCo.me = function() {
-	if (this.singleton == null) {
-		this.singleton = new MuDoCo();
-	}
-	return this.singleton;
 };
 
 MuDoCo.prototype.callbacks = {};
@@ -81,9 +71,18 @@ MuDoCo.prototype.run = function(cb, params, success, error) {
 };
 
 MuDoCo.prototype.processQ = function() {
+	if (!this.name) {
+		var keys = Object.keys( window );
+		for (var i in keys) {
+		      if (window[keys[i]] === this) {
+		    	  this.name = keys[i];
+		    	  break;
+		      }
+		}
+	}
 	var self = this;
-	if(_mdcq.length) {
-		var item = _mdcq.shift();
+	if(this.q.length) {
+		var item = this.q.shift();
 		if (typeof item == 'function') {
 			this.run(item, {}, function() { self.processQ(); });
 		}
@@ -109,7 +108,7 @@ MuDoCo.prototype.processQ = function() {
 
 MuDoCo.prototype.query = function(q, vars, success, error) {
 	var vars = vars || {};
-	vars.q = q;	
+	vars._q = q;	
 	if (this.callbacks[q] == undefined) {
 		q = 'fallback';
 	}	
@@ -167,10 +166,11 @@ MuDoCo.prototype.xssAjax = function(opts) {
     opts.retry = opts.retry || 3;
     var i = this.nextPendingIndex();
 
-    opts.vars.i = i;
-    opts.vars.r = Math.random();
+    opts.vars._i = i;
+    opts.vars._r = Math.random();
+    opts.vars._m = this.name;
 
-    opts.id = opts.id || ('MuDoCo-xssAjax-' + i);
+    opts.id = opts.id || ('MuDoCo-xssAjax-' + this.name + '-' + i);
 
     // Split up vars object into an array
     var varsArray = [];
@@ -214,7 +214,7 @@ MuDoCo.prototype.xssAjax = function(opts) {
 MuDoCo.prototype.mdcXssAjax = function(opts) {
 	opts = opts || {};
 	opts.vars = opts.vars || {};
-	opts.vars['a'] = this.getMNonce();
+	opts.vars._a = this.getMNonce();
 	opts.url = opts.url || (this.options['serverBase'] + '/public/xss.php');
 	this.xssAjax(opts);
 };
@@ -224,7 +224,7 @@ MuDoCo.prototype.xssAjaxCallback = function(res) {
 		var pending = this.xssPending[res.i];
 		this.xssPending[res.i] = null;
 		if (pending.timeout) window.clearTimeout(pending.timeout);
-		var q = pending.vars.q;
+		var q = pending.vars._q;
 		var mode = res.code == 0 ? 'success' : 'error';
 		if (q && this.callbacks[q] != undefined) {
 			this.callbacks[q].call(this, mode, res);
@@ -250,6 +250,3 @@ MuDoCo.prototype.nextPendingIndex = function() {
 	}
 	return parseInt(max) + 1;
 };
-
-// process the queue !
-MuDoCo.me().processQ();

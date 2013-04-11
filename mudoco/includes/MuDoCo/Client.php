@@ -52,7 +52,7 @@ class MuDoCo_Client {
       // client nonce is send to mudoco
       $url = $this->serverBaseUrl() . '/restricted/api.php?';
       $url .= http_build_query(array(
-          's' => 'nonce',
+          '_s' => 'nonce',
           'cn' => $this->getClientNonce(),
       	  'fp' => self::get_finger_print(),
           ));
