@@ -9,8 +9,6 @@
  * NB : this file is nearly standalone and can be put on the client server.
  */
 
-require_once 'webfingerprint.class.php';
-
 class MuDoCo_Client {
   
   public function __construct() {

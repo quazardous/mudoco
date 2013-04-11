@@ -19,6 +19,6 @@ $mudoco_conf['MUDOCO_SERVER_INIT'] = array(
     );
 
 $paths = explode(PATH_SEPARATOR, get_include_path());
-array_unshift($paths, '../../../includes');
+array_unshift($paths, __DIR__.'/../../../includes');
 set_include_path(implode(PATH_SEPARATOR, $paths));
 

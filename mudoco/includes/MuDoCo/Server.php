@@ -124,6 +124,7 @@ class MuDoCo_Server {
    */
   public function checkNonce($cnonce, $hnonce) {
     global $mudoco_conf;
+    require_once "MuDoCo/Client.php";
     if($nonce = $this->getNonceStorage()->get($cnonce, $mudoco_conf['MUDOCO_SERVER_CHECK_FINGERPRINT'] ? MuDoCo_Client::get_finger_print() : null)) {
       return md5($cnonce . $nonce) == $hnonce;
     }

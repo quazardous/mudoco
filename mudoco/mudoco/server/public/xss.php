@@ -13,7 +13,7 @@
  *
  */
 
-include_once '../etc/config.php';
+include_once __DIR__.'/../etc/config.php';
 include_once 'MuDoCo/Server.php';
 
 $server = new MuDoCo_Server;

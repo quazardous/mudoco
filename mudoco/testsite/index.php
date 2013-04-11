@@ -1,4 +1,4 @@
-<?php include_once 'etc/config.php'; ?>
+<?php include_once __DIR__.'/etc/config.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>

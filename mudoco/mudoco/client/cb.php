@@ -11,7 +11,7 @@
  * 
  */ 
 
-include_once 'etc/config.php';
+include_once __DIR__.'/etc/config.php';
 
 include_once 'MuDoCo/Client.php';
 
