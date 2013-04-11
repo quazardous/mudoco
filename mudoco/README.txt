@@ -55,20 +55,10 @@ Install :
  ** Config **
  
  Client side :
- - $mudoco_conf['MUDOCO_CLIENT_SALT']
- - $mudoco_conf['MUDOCO_SERVER_BASE'] (mandatory) URL to MuDoCo server
- - $mudoco_conf['MUDOCO_CLIENT_COOKIENAME'] default is 'MDCL'
+ -> see mudoco/client/etc/config-dist.php
  
  Server side :
- - $mudoco_conf['MUDOCO_STORAGE_SESSION_SALT']
- - $mudoco_conf['MUDOCO_STORAGE_NONCE_SALT']
- - $mudoco_conf['MUDOCO_PLUGIN_SESSION_STORAGE_CLASS'] default 'MuDoCo_Storage_Session_Default'
- - $mudoco_conf['MUDOCO_STORAGE_SESSION_COOKIENAME'] default is 'MDCID'
- - $mudoco_conf['MUDOCO_STORAGE_SESSION_LIFETIME'] default is 365*24*3600
- - $mudoco_conf['MUDOCO_SERVER_NONCE_STORAGE_CLASS'] default 'MuDoCo_Storage_Nonce_Sqlite'
- - $mudoco_conf['MUDOCO_STORAGE_NONCE_SQLITE_FILE'] (mandatory) path to rhe sqlite3 file (will be created)
- - $mudoco_conf['MUDOCO_SERVER_PLUGINS_DIR'] path to external plugins
- - $mudoco_conf['MUDOCO_SERVER_INIT'] list of plugins for init() function.
+ -> see mudoco/server/etc/config-dist.php
  
  
  ** Plugins **
